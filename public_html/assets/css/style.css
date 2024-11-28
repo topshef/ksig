@@ -1,0 +1,166 @@
+:root {
+    --colorMain: #737373;
+    --colorSecond: #e6e6e6;
+    --colorBack: white;
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    padding: 20px;
+    gap: 20px;
+}
+
+.container > section {
+    height: 40px;
+    background-color: var(--colorSecond);
+    width: 100%;
+    margin: 10px 0;
+    text-align: center;
+    color: var(--colorBack);
+    font-size: 30px;
+    zztext-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.row {
+    display: flex;
+    align-items: center;
+}
+
+p {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    text-align: center;
+    color: var(--colorMain);
+}
+
+textarea {
+    width: 100%;
+}
+
+#bodyBytesHex {
+    width: min(90vw, 400px);
+    display: none;
+}
+
+button {
+    position: relative;
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+}
+
+.row-buttons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 400px;
+}
+
+#btnScanTx {
+    padding: 5px;
+}
+
+#btnScanTx img {
+    height: 25mm;
+    width: auto;
+}
+
+#btnScanSeedNFC,
+#btnScanSeedQR, 
+#btnEnterSeedManual {
+    padding: 5px;
+}
+
+#btnScanSeedNFC img, #btnScanSeedQR img, #btnEnterSeedManual img {
+    width: 20mm; /* Adjust the size of the icons as needed. */
+    height: auto; /* Maintain aspect ratio */
+}
+
+#btnSignTx {
+    padding: 0; /* Adjust padding if necessary */
+}
+
+#btnSignTx img {
+    height: 22mm; /* 3/4 inch tall, unchanged */
+    width: auto; /* Maintain aspect ratio */
+}
+
+#btnSignTx, #btnSignTx img {
+    user-select: none;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+}
+
+button:hover img {
+    transform: scale(1.05);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal video {
+    width: 100vw;
+    height: auto;
+}
+
+#preview-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 9999;
+}
+
+#preview-close:hover,
+#preview-close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--white);
+    color: var(--colorMain);
+    padding: 8px 4px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 1000;
+}

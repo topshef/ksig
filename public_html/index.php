@@ -17,11 +17,39 @@
     <div class="container">
 
         <section>Scan transaction</section>
-        
+
+            <div class="row-buttons">            
+                <button id="btnScanTx" data-tooltip="Scan a transaction before signing it">
+                    <img src="assets/img/iconScanQR.png" alt="Scan">
+                </button>
+            </div>
+            
+            <textarea  type="text" id="bodyBytesHex" placeholder="transaction body bytes in hex" rows="7">
+            </textarea>
+
+            <mark>
+                <p id='bodyBytesChecksum'></p>
+            </mark>
+            
         <section>Scan seeds</section>
+           <div id="seedInputButtons" class="row-buttons">
+                <button id="btnScanSeedNFC" data-tooltip="Scan seed from NFC tag">
+                    <img src="assets/img/iconScanSeedNFC.svg" alt="Scan NFC">
+                </button>
+                <button id="btnScanSeedQR" data-tooltip="Scan seed from QR code">
+                    <img src="assets/img/iconScanQR.png" alt="Scan QR">
+                </button>
+                <button id="btnEnterSeedManual" data-tooltip="Enter seed manually">
+                    <img src="assets/img/iconEnterSeedManual.png" alt="Enter Manually">
+                </button>
+            </div>          
 
         <section>Sign transaction</section>
-    
+
+            <button id="btnSignTx" data-tooltip="Sign the above transaction">
+            <img src="assets/img/iconSignTx.png" alt="Sign"></button>
+       
+       
     </div>
      
 </body>
