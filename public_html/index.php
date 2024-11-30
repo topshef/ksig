@@ -43,7 +43,10 @@
                     <img src="assets/img/iconEnterSeedManual.png" alt="Enter Manually">
                 </button>
             </div>          
-
+            <div class='row'>
+                <input id="isHashSeed" type="checkbox" checked  data-tooltip="Untick to read plain keys, or tick to hash each seed input">
+                <label for="isHashSeed">Hash seeds</label>
+            </div>
         <section>Sign transaction</section>
 
             <button id="btnSignTx" data-tooltip="Sign the above transaction">
@@ -51,6 +54,20 @@
        
        
     </div>
-     
+
+    <!-- QR modal -->
+    <div id="qr_scanner" class="modal">   
+        <span id="preview-close">&times;</span>
+        <video id='preview'></video>
+    </div>
+        
+    <script src="assets/js/jquery-3.6.0.min.js"></script>
+    <script src="assets/js/instascan.min.js"></script> 
+    <script src="assets/js/qrcode.min.js"></script>
+    <script src="assets/js/nacl-fast.min.js"></script>    
+
+    <script src="assets/js/utils.js"></script>
+    <script src="assets/js/ksig.js"></script>
+    
 </body>
 </html>
