@@ -47,6 +47,23 @@
                 <input id="isHashSeed" type="checkbox" checked  data-tooltip="Untick to read plain keys, or tick to hash each seed input">
                 <label for="isHashSeed">Hash seeds</label>
             </div>
+            
+            <div class='row'>
+                <p><span id='seedCounter'>0</span> scans completed</p>&nbsp&nbsp
+                <button id="btnClearSeed">Clear</button>
+            </div>       
+     
+            <p id='seedList'></p>
+
+            <p>Public key ends in...</p>
+            <mark><h1 id="publicKeyEnding"></h1></mark>
+            <p id='publicKey'></p>
+            <img src='assets/img/key.jpg' width="150px">
+            <details>            
+                <summary>View private key</summary>
+                <textarea  type="text" id="seed" placeholder="Paste your private key here or scan seed(s)" rows="2" cols="100"></textarea>
+            </details>
+            
         <section>Sign transaction</section>
 
             <button id="btnSignTx" data-tooltip="Sign the above transaction">

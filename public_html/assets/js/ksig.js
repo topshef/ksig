@@ -13,7 +13,10 @@
         // │  │ ││││├┤ ││ ┬
         // └─┘└─┘┘└┘└  ┴└─┘
         // config
-        config: {},
+        config: {
+            autoSign: new URLSearchParams(window.location.search).get('autoSign') ?? true
+            // autosign: true  // automatically sign tx after reading seeds
+        },
 
         // ┬┌┐┌┬┌┬┐
         // │││││ │ 
@@ -44,6 +47,9 @@
             
             // Button to QR scan seed(s)
             document.getElementById('btnScanSeedQR')?.addEventListener('click', (event) => this.startQrScanning('btnScanSeedQR'))
+
+            // Clear seed data
+            document.getElementById("btnClearSeed").addEventListener("click", () => this.clearSeedData())
             
             // Close modal when clicking the close button
             document.getElementById('preview-close').onclick = () => this.closeModal()
@@ -103,19 +109,25 @@
 
             if (sourceTrigger === 'btnScanSeedQR') {
                 const isHashSeed = document.getElementById('isHashSeed').checked
-                // await this.updateSeedList(content, isHashSeed)
-                // await this.calcAccumulatedSeed(isHashSeed)
+                await this.updateSeedList(content, isHashSeed)
+                const seed = await this.calcAccumulatedSeed(isHashSeed)
+                // console.log("seed=", seed)
+                this.generateKeypair(seed)
+                if (this.autoSign && this.bodyBytesHex) signTransaction()
                 return
             }
             
             if (sourceTrigger === 'btnScanTx') {
                 // Handle transaction data
-                this.bodyBytesBase64 = content
+                this.bodyBytesBase64 = content // todo verify this
                 this.bodyBytesHex = this.base64ToHex(this.bodyBytesBase64)
                 this.bodyBytes = this.hexToUint8Array(this.bodyBytesHex)
 
+                // generate checksum based on base64 data
+                const checksum = (await sha256(content)).substring(0, 4).toUpperCase()
+
                  // Update UI elements
-                await this.updateTransactionUI(this.bodyBytesHex)
+                this.updateTransactionUI(this.bodyBytesHex, checksum)
                 return
             } 
             alert('Unknown scan source ref JD98432') // random refs handy if user screenshots
@@ -137,8 +149,70 @@
         // └─┘└─┘┴└─└─┘  ┴─┘└─┘└─┘┴└─┘
         // core logic
 
-        handleSeedContent() {},
-        calcAccumulatedSeed() {},
+        // **Update Seed List**
+        async updateSeedList(seedPiece, isHashSeed = true) {
+            
+            const snippet = this.getSnippet(seedPiece)
+     
+            if (isHashSeed) seedPiece = await sha256(seedPiece)
+
+            if (!this.seedArray.includes(seedPiece)) {
+                this.seedArray.push(seedPiece)
+                document.getElementById('seedList').innerHTML += `${snippet}<br>`
+                document.getElementById('seedCounter').textContent = this.seedArray.length
+            } else {
+                alert('Already scanned: ' + snippet)
+            }
+        },
+
+
+        getSnippet(seedPiece) {
+            // Check if there's an explicit prefix using a slash
+            const firstSlashIndex = seedPiece.indexOf('/')
+            return (firstSlashIndex === -1) 
+                ? seedPiece.substring(0, 5) // Take the first few characters
+                : seedPiece.substring(0, firstSlashIndex) // Take everything up to the first slash
+        },
+
+        // **Calculate Accumulated Seed**
+        async calcAccumulatedSeed(isHashSeed = true) {
+            let seedText = (isHashSeed) 
+                ? await sha256(this.seedArray.sort().join('')) 
+                : this.seedArray.join('')
+            // window.alert(`seedText ${seedText}`)
+
+            if (!isHashSeed) {
+                let isSeedPhrase = seedText.trim().split(/\s+/).length === 24 && /^[a-z\s]*$/.test(seedText) // roughly
+
+                // if (isSeedPhrase) console.log("seed phrase detected: " + seedText)
+                if (isSeedPhrase) seedText = await seedPhraseToPrivateKey(seedText)
+            }
+
+            document.getElementById("seed").textContent = seedText
+            seed = this.hexToUint8Array(seedText)
+            return seed
+
+        },
+
+
+        generateKeypair(seed) {
+            if (!seed)
+                return alert("Please generate a seed first!")
+
+            // Generate a key pair from the seed
+            const keyPair = nacl.sign.keyPair.fromSeed(seed)
+
+            // Construct public and private keys in hexadecimal format
+            const publicKeyHex = "302a300506032b6570032100" + this.byteArrayToHexString(keyPair.publicKey)
+            const privateKeyHex = this.byteArrayToHexString(seed)
+            
+            // Extract the last 4 characters of the public key for display
+            const last3chars = publicKeyHex.slice(-4)
+
+            // Update UI with the public key and its ending
+            document.getElementById("publicKeyEnding").textContent = last3chars
+            document.getElementById("publicKey").textContent = publicKeyHex.slice(-64)
+        },
 
 
         // ┬ ┬┌┬┐┬┬  ┌─┐
@@ -163,18 +237,35 @@
                 bytes[i] = parseInt(hexString.substr(i * 2, 2), 16)
             return bytes
         },
-        
-        
+
+        byteArrayToHexString(byteArray) {
+          return Array.from(byteArray, function(byte) {
+            return ('0' + (byte & 0xFF).toString(16)).slice(-2)
+          }).join('')
+        },
+            
         // ╦ ╦╦  ┬ ┬┌─┐┌┬┐┌─┐┌┬┐┌─┐┌─┐
         // ║ ║║  │ │├─┘ ││├─┤ │ ├┤ └─┐
         // ╚═╝╩  └─┘┴  ─┴┘┴ ┴ ┴ └─┘└─┘
         // UI updates
-        updateSeedList() {},
 
-        async updateTransactionUI(bodyBytesHex) {
+        clearSeedData() {
+            this.seedArray = []
+            this.setHTML('seedList')
+            this.setHTML('seedCounter', 0)
+            this.setHTML('publicKeyEnding')
+            this.setHTML('publicKey')
+            this.setHTML('seed')
+        },
+
+        setHTML(id, value = '') {
+            document.getElementById(id).innerHTML = value
+        },
+
+        updateTransactionUI(bodyBytesHex, checksum) {
             document.getElementById('bodyBytesHex').textContent = bodyBytesHex
 
-            const checksum = (await sha256(bodyBytesHex)).substring(0, 4).toUpperCase()
+            
             document.getElementById('bodyBytesChecksum').innerHTML = 
                 `Checksum: ${checksum} ⚠️ ensure this matches`
             document.getElementById('bodyBytesHex').style.display = 'block'

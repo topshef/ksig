@@ -60,12 +60,13 @@ textarea {
     display: none;
 }
 
-button {
+button:not(#btnClearSeed) {
     position: relative;
     background-color: transparent;
     cursor: pointer;
     border: none;
 }
+
 
 .row-buttons {
     display: flex;
