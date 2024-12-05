@@ -58,6 +58,11 @@
             window.addEventListener('click', (event) => {
                 if (event.target === document.getElementById('qr_scanner')) this.closeModal()
             })
+
+            // sign tx or any message
+            document.getElementById("btnSignTx").addEventListener("click", () => this.signTransaction())
+
+
             
         },
 
@@ -113,7 +118,8 @@
                 const seed = await this.calcAccumulatedSeed(isHashSeed)
                 // console.log("seed=", seed)
                 this.generateKeypair(seed)
-                if (this.autoSign && this.bodyBytesHex) signTransaction()
+                if (this.config.autoSign && this.bodyBytes) this.signTransaction()
+                
                 return
             }
             
@@ -200,18 +206,40 @@
                 return alert("Please generate a seed first!")
 
             // Generate a key pair from the seed
-            const keyPair = nacl.sign.keyPair.fromSeed(seed)
+            this.keyPair = nacl.sign.keyPair.fromSeed(seed)
 
             // Construct public and private keys in hexadecimal format
-            const publicKeyHex = "302a300506032b6570032100" + this.byteArrayToHexString(keyPair.publicKey)
-            const privateKeyHex = this.byteArrayToHexString(seed)
+            this.publicKeyHex = "302a300506032b6570032100" + this.byteArrayToHexString(this.keyPair.publicKey)
+            this.privateKeyHex = this.byteArrayToHexString(seed)
             
             // Extract the last 4 characters of the public key for display
-            const last3chars = publicKeyHex.slice(-4)
+            const last3chars = this.publicKeyHex.slice(-4)
 
             // Update UI with the public key and its ending
             document.getElementById("publicKeyEnding").textContent = last3chars
-            document.getElementById("publicKey").textContent = publicKeyHex.slice(-64)
+            document.getElementById("publicKey").textContent = this.publicKeyHex.slice(-64)
+        },
+
+
+        // SIGN TX
+        signTransaction() {    
+            const bodyBytes = this.bodyBytes
+            const keyPair = this.keyPair
+            
+            console.log(keyPair) 
+            if (!bodyBytes) alert('missing bodyBytes')
+                
+            // Sign the bodyBytes
+            const signature = nacl.sign.detached(bodyBytes, keyPair.secretKey)
+
+            // Convert the signature to hex string
+            const signatureHex = this.byteArrayToHexString(signature)
+
+            // Display the QR
+            QRtext = `${this.publicKeyHex} ${signatureHex}` 
+
+            document.getElementById("QRtext").textContent = QRtext
+            this.updateQR()
         },
 
 
@@ -269,7 +297,24 @@
             document.getElementById('bodyBytesChecksum').innerHTML = 
                 `Checksum: ${checksum} ⚠️ ensure this matches`
             document.getElementById('bodyBytesHex').style.display = 'block'
+        },
+        
+        updateQR() {
+            // Clear the previous QR code
+            const qrcodeElement = document.getElementById('qrcode')
+            qrcodeElement.innerHTML = ''
+
+            // Generate a new QR code
+            new QRCode(qrcodeElement, {
+                text: QRtext,
+                width: 256,
+                height: 256,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M
+            })            
         }
+            
 
         
     }

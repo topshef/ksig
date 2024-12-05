@@ -68,7 +68,9 @@
 
             <button id="btnSignTx" data-tooltip="Sign the above transaction">
             <img src="assets/img/iconSignTx.png" alt="Sign"></button>
-       
+
+            <span id="qrcode">QR code</span>
+            <p id="QRtext">QR text</p>       
        
     </div>
 
