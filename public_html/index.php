@@ -15,9 +15,23 @@
 
 <body>
     <div class="container">
-
+        <section>Create key</section>
+            <div class='row-buttons'>
+               <button id="btnGenerateSeed" data-tooltip="Generate a new seed">
+                   Generate Seed
+               </button>
+               <button id="btnWriteSeedNFC" data-tooltip="Write current seed to NFC tag">
+                   Write Seed to NFC Tag
+               </button>
+            </div>
+            <details>            
+                <summary>Show QR</summary>
+                
+                <div id="seedQrCode" class="row">
+                    <!-- QR code will be generated here -->
+                </div>          
+            </details>
         <section>Scan transaction</section>
-
             <div class="row-buttons">            
                 <button id="btnScanTx" data-tooltip="Scan a transaction before signing it">
                     <img src="assets/img/iconScanQR.png" alt="Scan">
@@ -54,7 +68,7 @@
             </div>       
      
             <p id='seedList'></p>
-
+            
             <p>Public key ends in...</p>
             <mark><h1 id="publicKeyEnding"></h1></mark>
             <p id='publicKey'></p>
@@ -63,7 +77,6 @@
                 <summary>View private key</summary>
                 <textarea  type="text" id="seed" placeholder="Paste your private key here or scan seed(s)" rows="2" cols="100"></textarea>
             </details>
-            
         <section>Sign transaction</section>
 
             <button id="btnSignTx" data-tooltip="Sign the above transaction">
@@ -71,7 +84,6 @@
 
             <span id="qrcode">QR code</span>
             <p id="QRtext">QR text</p>       
-       
     </div>
 
     <!-- QR modal -->

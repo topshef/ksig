@@ -60,13 +60,12 @@ textarea {
     display: none;
 }
 
-button:not(#btnClearSeed) {
+button:has(img) {
     position: relative;
     background-color: transparent;
     cursor: pointer;
-    border: none;
+    border: none;    
 }
-
 
 .row-buttons {
     display: flex;
@@ -164,4 +163,15 @@ button:hover img {
     border-radius: 4px;
     white-space: nowrap;
     z-index: 1000;
+}
+
+/* for new keys */
+#seedQrCode {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.hidden {
+    display: none
 }

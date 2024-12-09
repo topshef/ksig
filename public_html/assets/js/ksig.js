@@ -42,6 +42,11 @@
         // └─┘ └┘ └─┘┘└┘ ┴   ┴─┘┴└─┘ ┴ └─┘┘└┘└─┘┴└─└─┘
         // event listeners
         addEventListeners() {
+            
+            // generate new seed
+            document.getElementById("btnGenerateSeed")?.addEventListener("click", () => this.generateSeed())
+            document.getElementById("btnWriteSeedNFC")?.addEventListener("click", () => this.writeSeedToNFC())
+            
             // Button to QR scan transaction
             document.getElementById('btnScanTx').addEventListener('click', (event) => this.startQrScanning('btnScanTx'))
             
@@ -240,6 +245,45 @@
 
             document.getElementById("QRtext").textContent = QRtext
             this.updateQR()
+        },
+
+
+        generateSeed() {
+            const randomBytes = nacl.randomBytes(32)
+            const seedHex = this.byteArrayToHexString(randomBytes)
+            document.getElementById("seed").textContent = seedHex
+
+            this.generateKeypair(randomBytes) // reuse existing method
+            
+            // display QR code
+            const qrCodeElement = document.getElementById("seedQrCode")
+            qrCodeElement.innerHTML = "" // Clear any existing QR code
+            new QRCode(qrCodeElement, {
+                text: seedHex,
+                width: 128,
+                height: 128,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            })
+        },
+
+        async writeSeedToNFC() {
+            const seedHex = document.getElementById("seed").textContent.trim()
+            if (!seedHex) {
+               alert("No seed found to write.")
+               return
+            }
+            if ('NDEFReader' in window) {
+               try {
+                 const ndef = new NDEFReader()
+                 await ndef.write({records: [{ recordType: "text", data: seedHex }]})
+                 alert('Seed written to NFC tag.')
+               } catch (error) {
+                 console.error("JR32495 Error writing NFC tag: ", error)
+                 alert('Error writing NFC tag.')
+               }
+            } else alert("NFC writing is not supported on this device.")
         },
 
 
