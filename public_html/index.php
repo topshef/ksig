@@ -15,7 +15,9 @@
 
 <body>
     <div class="container">
-        <section>Create key</section>
+        <section>
+          <h2>Create key</h2>
+          <span class='feature'>
             <div class='row-buttons'>
                <button id="btnGenerateSeed" data-tooltip="Generate a new seed">
                    Generate Seed
@@ -26,12 +28,16 @@
             </div>
             <details>            
                 <summary>Show QR</summary>
-                
                 <div id="seedQrCode" class="row">
                     <!-- QR code will be generated here -->
                 </div>          
             </details>
-        <section>Scan transaction</section>
+          </span>
+        </section>
+        
+        <section>
+          <h2>Scan transaction</h2>
+          <span class='feature'>
             <div class="row-buttons">            
                 <button id="btnScanTx" data-tooltip="Scan a transaction before signing it">
                     <img src="assets/img/iconScanQR.png" alt="Scan">
@@ -44,8 +50,11 @@
             <mark>
                 <p id='bodyBytesChecksum'></p>
             </mark>
-            
-        <section>Scan seeds</section>
+          </span>
+        </section>
+        <section>
+          <h2>Scan seeds</h2>
+          <span class='feature'>
            <div id="seedInputButtons" class="row-buttons">
                 <button id="btnScanSeedNFC" data-tooltip="Scan seed from NFC tag">
                     <img src="assets/img/iconScanSeedNFC.svg" alt="Scan NFC">
@@ -77,13 +86,19 @@
                 <summary>View private key</summary>
                 <textarea  type="text" id="seed" placeholder="Paste your private key here or scan seed(s)" rows="2" cols="100"></textarea>
             </details>
-        <section>Sign transaction</section>
+          </span>
+        </section>
+        <section>
+          <h2>Sign transaction</h2>
+          <span class='feature'>
 
             <button id="btnSignTx" data-tooltip="Sign the above transaction">
             <img src="assets/img/iconSignTx.png" alt="Sign"></button>
 
             <span id="qrcode">QR code</span>
             <p id="QRtext">QR text</p>       
+          </span>
+        </section>
     </div>
 
     <!-- QR modal -->
@@ -100,5 +115,26 @@
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/ksig.js"></script>
     
+    <script>
+    
+        document.addEventListener('DOMContentLoaded', () => {
+            // Select all h2 elements
+            const headers = document.querySelectorAll('.container > section > h2')
+
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    // Find the sibling with class 'feature' and toggle 'hidden' class
+                    const feature = header.nextElementSibling
+                    if (feature && feature.classList.contains('feature')) {
+                        feature.classList.toggle('hidden')
+
+                        // Toggle 'open' class on the header
+                        header.classList.toggle('open')
+                    }
+                })
+            })
+        })
+    
+    </script>
 </body>
 </html>
