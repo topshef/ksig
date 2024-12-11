@@ -13,8 +13,8 @@
 
     $remoteAgent = $_SERVER['HTTP_USER_AGENT'];
     $device = detectDevice($remoteAgent);
-    if ($isJson && $data) elog("$device says $data");
-    else elog($obj, "$device returned json");
+    if ($isJson && $data) elog($obj, "$device returned json $data");
+    else elog("$device says $data");
 
 
     function detectDevice($userAgent) {
