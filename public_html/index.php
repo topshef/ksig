@@ -114,6 +114,7 @@
         <video id='preview'></video>
     </div>
         
+    <script src="remoteLogger.js"></script>    
     <script src="assets/js/jquery-3.6.0.min.js"></script>
     <script src="assets/js/instascan.min.js"></script> 
     <script src="assets/js/qrcode.min.js"></script>
@@ -121,6 +122,7 @@
 
     <script src="assets/js/utils.js"></script>
     <script src="assets/js/ksig.js"></script>
+    
     
     <script>
     
