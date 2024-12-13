@@ -44,12 +44,28 @@
         addEventListeners() {
             
             // generate new seed
-            document.getElementById("btnGenerateSeed")?.addEventListener("click", () => this.generateSeed())
+            // document.getElementById("btnGenerateSeed")?.addEventListener("click", () => this.generateSeed())
+            
+           document.getElementById('btnGenerateSeed')?.addEventListener('click', async (event) =>
+            {
+              await this.generateSeed()
+            })            
+            
             document.getElementById("btnWriteSeedNFC")?.addEventListener("click", () => this.writeSeedToNFC())
             
             // Button to QR scan transaction
             document.getElementById('btnScanTx').addEventListener('click', (event) => this.startQrScanning('btnScanTx'))
             
+            //scan seed from NFC tag
+            // document.getElementById('btnScanSeedNFC')?.addEventListener('click', (event) => this.scanSeedFromNFC())
+            document.getElementById('btnScanSeedNFC')?.addEventListener('click', async (event) =>
+            {
+              await this.scanSeedFromNFC()
+            })
+
+
+
+
             // Button to QR scan seed(s)
             document.getElementById('btnScanSeedQR')?.addEventListener('click', (event) => this.startQrScanning('btnScanSeedQR'))
 
@@ -121,7 +137,7 @@
                 const isHashSeed = document.getElementById('isHashSeed').checked
                 await this.updateSeedList(content, isHashSeed)
                 const seed = await this.calcAccumulatedSeed(isHashSeed)
-                // console.log("seed=", seed)
+                console.log("seed=", seed)
                 this.generateKeypair(seed)
                 if (this.config.autoSign && this.bodyBytes) this.signTransaction()
                 
@@ -223,6 +239,18 @@
             // Update UI with the public key and its ending
             document.getElementById("publicKeyEnding").textContent = last3chars
             document.getElementById("publicKey").textContent = this.publicKeyHex.slice(-64)
+            
+            // Generate QR code for the public key
+            const publicKeyQrCodeElement = document.getElementById('publicKeyQrCode')
+            publicKeyQrCodeElement.innerHTML = '' // Clear existing QR code
+            new QRCode(publicKeyQrCodeElement, {
+                text: this.publicKeyHex,
+                width: 128,
+                height: 128,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            })
         },
 
 
@@ -248,42 +276,91 @@
         },
 
 
-        generateSeed() {
+        async generateSeed() {
             const randomBytes = nacl.randomBytes(32)
-            const seedHex = this.byteArrayToHexString(randomBytes)
-            document.getElementById("seed").textContent = seedHex
-
-            this.generateKeypair(randomBytes) // reuse existing method
+            const seedText = this.byteArrayToHexString(randomBytes)
+            document.getElementById("seed").textContent = seedText
+            
+            //to show the public key of an accumulator need call calcAccumulatedSeed etc
+            // this.generateKeypair(randomBytes) // only does it as plain, not hashed
+            const isHashSeed = document.getElementById('isHashSeed').checked
+            await this.updateSeedList(seedText, isHashSeed)
+            const seed = await this.calcAccumulatedSeed(isHashSeed)
+            console.log("seed=", seed)
+            this.generateKeypair(seed)
             
             // display QR code
             const qrCodeElement = document.getElementById("seedQrCode")
             qrCodeElement.innerHTML = "" // Clear any existing QR code
             new QRCode(qrCodeElement, {
-                text: seedHex,
+                text: seedText,
                 width: 128,
                 height: 128,
                 colorDark: "#000000",
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             })
+            alert(`Yey! A new seed was generated\n\nNow save the QR or write to NFC tag`)
         },
 
         async writeSeedToNFC() {
-            const seedHex = document.getElementById("seed").textContent.trim()
-            if (!seedHex) {
+            const seed = document.getElementById("seed").textContent.trim()
+            console.log(`seed=${seed}`)
+            if (!seed) {
                alert("No seed found to write.")
                return
             }
             if ('NDEFReader' in window) {
                try {
                  const ndef = new NDEFReader()
-                 await ndef.write({records: [{ recordType: "text", data: seedHex }]})
+                 await ndef.write({records: [{ recordType: "text", data: seed }]})
                  alert('Seed written to NFC tag.')
                } catch (error) {
                  console.error("JR32495 Error writing NFC tag: ", error)
                  alert('Error writing NFC tag.')
                }
             } else alert("NFC writing is not supported on this device.")
+        },
+
+        async scanSeedFromNFC() {
+            alert('Tap some seed info to append')
+            let message = await this.readNFC()
+            if (message) {
+                const isHashSeed = document.getElementById('isHashSeed').checked
+                
+                // await appendSeedData(message)
+                const content = await this.getMessageFromNFCdata(message)
+                await this.updateSeedList(content, isHashSeed)
+                const seed = await this.calcAccumulatedSeed(isHashSeed)
+                this.generateKeypair(seed)
+                if (this.config.autoSign && this.bodyBytes) this.signTransaction()
+            }
+        },
+    
+        async readNFC() {
+            if ('NDEFReader' in window) {
+                const ndef = new NDEFReader()
+                try {
+                    await ndef.scan()
+                    return new Promise((resolve, reject) => {
+                        ndef.addEventListener("reading", ({ message }) => {
+                            resolve(message)
+                        })
+                    })
+                } catch (error) {
+                    console.error("Error reading NFC tag: ", error)
+                    alert('Error reading NFC tag.')
+                }
+            } else alert("NFC reading is not supported on this device.")
+        },
+
+        async getMessageFromNFCdata(message) {
+            const decoder = new TextDecoder()
+            for (const record of message.records) {
+                let someMoreData = decoder.decode(record.data)
+                // window.alert(`read data ${someMoreData}`)
+                return someMoreData // only return first record
+            }
         },
 
 

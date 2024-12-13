@@ -209,3 +209,10 @@ button:hover img {
 .hidden {
     display: none
 }
+
+#publicKey {
+    user-select: text; /* Allow text selection */
+    -webkit-user-select: text; /* Safari */
+    -moz-user-select: text; /* Firefox */
+    -ms-user-select: text; /* IE/Edge */
+}

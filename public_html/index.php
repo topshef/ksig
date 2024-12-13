@@ -5,11 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KSIG</title>
     <?php require_once("cacheBusting.php"); ?><!-- cacheBusting.php -->
-    <link rel="stylesheet" href="<?php echo getCacheBustedPath('assets/css/style.css'); ?>">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- <link rel="stylesheet" href="<?php echo getCacheBustedPath('assets/css/style.css'); ?>"> -->
     <link rel="icon" id="favicon" type="image/svg+xml" href="./assets/img/ksig.ico">
+    <link rel="manifest" href="manifest.json">
+
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Expires" content="0"/>
+    
+    <link rel="manifest" href="manifest.json">
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(() => console.log('Service Worker Registered'))
+          .catch(error => console.error('Service Worker Registration Failed:', error))
+      }
+    </script>
     
 </head>
 
@@ -30,7 +42,7 @@
                </button>
             </div>
             <details>            
-                <summary>Show QR</summary>
+                <summary>Show QR ⚠️ private</summary>
                 <div id="seedQrCode" class="row">
                     <!-- QR code will be generated here -->
                 </div>          
@@ -88,9 +100,17 @@
             <p>Public key ends in...</p>
             <mark><h1 id="publicKeyEnding"></h1></mark>
             <p id='publicKey'></p>
+
+            <details>
+                <summary>Show QR of public key</summary>
+                <div id="publicKeyQrCode" class="row">
+                    <!-- QR code will be generated here -->
+                </div>
+            </details>
+
             <img src='assets/img/key.jpg' width="150px">
             <details>            
-                <summary>View private key</summary>
+                <summary>⚠ View private key</summary>
                 <textarea  type="text" id="seed" placeholder="Paste your private key here or scan seed(s)" rows="2" cols="100"></textarea>
             </details>
           </span>
@@ -121,11 +141,14 @@
     <script src="assets/js/nacl-fast.min.js"></script>    
 
     <script src="assets/js/utils.js"></script>
-    <script src="assets/js/ksig.js"></script>
+    <!--<script src="assets/js/ksig.js"></script> -->
+    <script src="<?php echo getCacheBustedPath('assets/js/ksig.js'); ?>"></script>
     
     
     <script>
     
+        // UI related scripts. can be moved to ksig.js but not critical
+        
         document.addEventListener('DOMContentLoaded', () => {
             // Select all h2 elements
             const headers = document.querySelectorAll('.container > section > h2')
@@ -142,8 +165,56 @@
                     }
                 })
             })
+            
+            
+            addPrivateKeyConfirmation()
+
         })
+
+                
+        function addPrivateKeyConfirmation() {
+            document.querySelectorAll('details').forEach(details => {
+                const summary = details.querySelector('summary')
+                if (summary?.textContent.toLowerCase().includes('private')) {
+                    summary.addEventListener('click', e => {
+                        if (!details.open) { // Only intercept the open action
+                            e.preventDefault() // Prevent default toggle behavior
+                            if (confirm('⚠️ WARNING: This is secret information, ensure no-one can see or record your screen. Proceed to reveal?'))
+                                details.open = true // Manually open if user confirms
+                        }
+                    })
+                }
+            })
+        }
+
     
     </script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js').then(reg => {
+          reg.onupdatefound = () => {
+            const installingWorker = reg.installing
+            installingWorker.onstatechange = () => {
+              if (installingWorker.state === 'installed') {
+                if (navigator.serviceWorker.controller) {
+                  // New update available
+                  const reload = confirm('New update available. Reload now?')
+                  if (reload) {
+                    installingWorker.postMessage('skipWaiting')
+                    window.location.reload()
+                  }
+                } else {
+                  console.log('Content is now available offline!')
+                }
+              }
+            }
+          }
+        })
+      }
+    </script>
+
+    
+
 </body>
 </html>
