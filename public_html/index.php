@@ -31,11 +31,12 @@
             <img src='./assets/img/ksig.uk.png' height='60px'>
         </div>
         
-        <div class="feature-presets" style="text-align: center; margin-bottom: 20px;">
-            <a href="?showFeatures=section_create_seed,section_scan_seed,section_view_key" class="basic-button">Key Management</a>
-            <a href="?showFeatures=section_scan_tx,section_scan_seed,section_sign_tx,section_view_key" class="basic-button">Signing</a>
-            <a href="/" class="basic-button">Show All Features</a>
+
+        <div class="tabs" style="text-align: center; margin-bottom: 20px;">
+            <a href="?showFeatures=section_create_seed,section_scan_seed,section_view_key" class="tab selected">Key Management</a>
+            <a href="?showFeatures=section_scan_tx,section_scan_seed,section_sign_tx,section_view_key" class="tab">Signing</a>
         </div>
+
         
         <section id='section_create_seed'>
           <h2>Generate new seeds</h2>
@@ -176,8 +177,28 @@
             
             addPrivateKeyConfirmation()
             showFeaturesBasedOnUrl()
+            highlightSelectedTab()
 
         })
+
+        function highlightSelectedTab() {
+            const urlParams = new URLSearchParams(window.location.search)
+            const currentFeatures = urlParams.get('showFeatures') || ''
+            const currentFeaturesSet = new Set(currentFeatures.split(','))
+
+            document.querySelectorAll('.tabs .tab').forEach(tab => {
+                tab.classList.remove('selected')
+                const tabUrl = new URL(tab.href, window.location.origin)
+                const tabFeatures = tabUrl.searchParams.get('showFeatures') || ''
+                const tabFeaturesSet = new Set(tabFeatures.split(','))
+                // Check if sets are the same
+                if (tabFeaturesSet.size === currentFeaturesSet.size && 
+                    [...tabFeaturesSet].every(f => currentFeaturesSet.has(f))) {
+                    tab.classList.add('selected')
+                }
+            })
+        }
+
 
                 
         function addPrivateKeyConfirmation() {
