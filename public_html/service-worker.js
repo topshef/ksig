@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ksig-cache-v1.53' // Increment version for updates
+const CACHE_NAME = 'ksig-cache-v1.57' // Increment version for updates
 const urlsToCache = [
   '/',
   '/index.php', // Adjust for your actual page path
@@ -45,21 +45,38 @@ self.addEventListener('activate', event => {
 })
 
 self.addEventListener('fetch', event => {
+  // Only handle GET requests over HTTP(S)
+  if (event.request.method !== 'GET' || !event.request.url.startsWith('http')) {
+    event.respondWith(fetch(event.request))
+    return
+  }
+
   event.respondWith(
     caches.match(event.request).then(cachedResponse => {
       if (cachedResponse) {
-        // Optionally update in background
-        fetch(event.request).then(networkResponse => {
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, networkResponse.clone())
-          })
-        }).catch(() => console.log('Network fetch failed, serving cached response'))
+        // Serve cached response immediately
+        // Attempt to update in background
+        const fetchPromise = fetch(event.request).then(networkResponse => {
+          if (networkResponse.ok) {
+            return caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, networkResponse.clone())
+              return networkResponse
+            })
+          }
+          return networkResponse
+        }).catch(() => console.log('Network fetch failed'))
+
         return cachedResponse
       }
+
+      // Not cached, fetch and cache if OK
       return fetch(event.request).then(networkResponse => {
-        caches.open(CACHE_NAME).then(cache => {
-          cache.put(event.request, networkResponse.clone())
-        })
+        if (networkResponse.ok) {
+          return caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, networkResponse.clone())
+            return networkResponse
+          })
+        }
         return networkResponse
       })
     })
