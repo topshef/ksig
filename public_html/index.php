@@ -30,15 +30,22 @@
         <div style='width: max-content; margin:  0 auto 0 20px; '>
             <img src='./assets/img/ksig.uk.png' height='60px'>
         </div>
-        <section>
-          <h2>Create key</h2>
+        
+        <div class="feature-presets" style="text-align: center; margin-bottom: 20px;">
+            <a href="?showFeatures=section_create_seed,section_scan_seed,section_view_key" class="basic-button">Key Management</a>
+            <a href="?showFeatures=section_scan_tx,section_scan_seed,section_sign_tx,section_view_key" class="basic-button">Signing</a>
+            <a href="/" class="basic-button">Show All Features</a>
+        </div>
+        
+        <section id='section_create_seed'>
+          <h2>Generate new seeds</h2>
           <span class='feature'>
             <div class='row-buttons'>
-               <button id="btnGenerateSeed" data-tooltip="Generate a new seed">
-                   Generate Seed
+               <button id="btnGenerateSeed" class='basic-button'>
+                   Generate new seed
                </button>
-               <button id="btnWriteSeedNFC" data-tooltip="Write current seed to NFC tag">
-                   Write Seed to NFC Tag
+               <button id="btnWriteSeedNFC" class='basic-button'>
+                   Save seed to NFC tag
                </button>
             </div>
             <details id='showPrivateQR' class='hidden'>            
@@ -50,7 +57,7 @@
           </span>
         </section>
         
-        <section>
+        <section id='section_scan_tx'>
           <h2>Scan transaction</h2>
           <span class='feature'>
             <div class="row-buttons">            
@@ -67,7 +74,7 @@
             </mark>
           </span>
         </section>
-        <section>
+        <section id='section_scan_seed'>
           <h2>Scan seeds</h2>
           <span class='feature'>
            <div id="seedInputButtons" class="row-buttons">
@@ -94,7 +101,7 @@
             <p id='seedList'></p>
           </span>
         </section>
-        <section>
+        <section id='section_view_key'>
           <h2>View key</h2>
            <span class='feature'>
             <p>Public key ends in...</p>
@@ -115,7 +122,7 @@
             </details>
           </span>
         </section>
-        <section>
+        <section id='section_sign_tx'>
           <h2>Sign transaction</h2>
           <span class='feature'>
 
@@ -168,6 +175,7 @@
             
             
             addPrivateKeyConfirmation()
+            showFeaturesBasedOnUrl()
 
         })
 
@@ -184,6 +192,22 @@
                         }
                     })
                 }
+            })
+        }
+
+
+        function showFeaturesBasedOnUrl() {
+            // Parse the URL for the `showFeatures` parameter
+            const urlParams = new URLSearchParams(window.location.search)
+            const showFeatures = urlParams.get('showFeatures')
+
+            if (!showFeatures) return
+            const allowedFeatures = showFeatures.split(',') // Split the parameter into an array
+
+            document.querySelectorAll('.container > section').forEach(section => {
+                // If the section's ID is not in the allowed list, hide it
+                if (!allowedFeatures.includes(section.id))
+                    section.style.display = 'none'
             })
         }
 

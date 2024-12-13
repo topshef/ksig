@@ -1,20 +1,28 @@
 :root {
-    --colorMain: #737373;
-    --colorSecond: #cccccc;
+    --colorMain: #246ddb;
+    --colorSecond: #bed3f3;
     --colorBack: white;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap');
 
 * {
     -webkit-tap-highlight-color: transparent;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300; 
+    color: var(--colorMain);
 }
 
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
+}
+
+.container {
+    max-width: 600px; /* Set a sensible maximum width for desktop */
+    margin: 0 auto; 
+    padding: 10px;
 }
 
 .container > section > .feature {
@@ -146,6 +154,14 @@ button:has(img) {
     -ms-user-select: none; /* IE/Edge */
 }
 
+button {
+    border: none; 
+}
+
+button:hover {
+    outline: none; /* Ensures no outline on hover */
+}
+
 button:hover img {
     transform: scale(1.05);
 }
@@ -188,7 +204,7 @@ button:hover img {
 [data-tooltip]:hover::after {
     content: attr(data-tooltip);
     position: absolute;
-    bottom: 90%;
+    bottom: 110%;
     left: 50%;
     transform: translateX(-50%);
     background: var(--colorMain);
@@ -215,4 +231,23 @@ button:hover img {
     -webkit-user-select: text; /* Safari */
     -moz-user-select: text; /* Firefox */
     -ms-user-select: text; /* IE/Edge */
+}
+
+
+.basic-button {
+    position: relative; 
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: var(--colorSecond);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.basic-button:hover {
+    background-color: #0056b3;
 }
