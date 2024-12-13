@@ -134,7 +134,11 @@ button:has(img) {
     padding: 5px;
 }
 
-#btnScanSeedNFC img, #btnScanSeedQR img, #btnEnterSeedManual img {
+#btnGenerateSeed img, 
+#btnScanSeedNFC img, 
+#btnScanSeedQR img, 
+#btnEnterSeedManual img
+{
     width: 20mm; /* Adjust the size of the icons as needed. */
     height: auto; /* Maintain aspect ratio */
 }
@@ -143,6 +147,7 @@ button:has(img) {
     padding: 0; /* Adjust padding if necessary */
 }
 
+#btnWriteSeedNFC img,
 #btnSignTx img {
     height: 22mm; /* 3/4 inch tall, unchanged */
     width: auto; /* Maintain aspect ratio */

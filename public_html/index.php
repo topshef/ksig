@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KSIG</title>
     <?php require_once("cacheBusting.php"); ?><!-- cacheBusting.php -->
-    <link rel="stylesheet" href="assets/css/style.css">
-    <!-- <link rel="stylesheet" href="<?php echo getCacheBustedPath('assets/css/style.css'); ?>"> -->
+    <!--<link rel="stylesheet" href="assets/css/style.css">-->
+    <link rel="stylesheet" href="<?php echo getCacheBustedPath('assets/css/style.css'); ?>">
     <link rel="icon" id="favicon" type="image/svg+xml" href="./assets/img/ksig.ico">
     <link rel="manifest" href="manifest.json">
 
@@ -14,7 +14,6 @@
     <meta http-equiv="Pragma" content="no-cache"/>
     <meta http-equiv="Expires" content="0"/>
     
-    <link rel="manifest" href="manifest.json">
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker.js')
@@ -42,12 +41,16 @@
           <h2>Generate new seeds</h2>
           <span class='feature'>
             <div class='row-buttons'>
-               <button id="btnGenerateSeed" class='basic-button'>
-                   Generate new seed
-               </button>
-               <button id="btnWriteSeedNFC" class='basic-button'>
-                   Save seed to NFC tag
-               </button>
+            
+            
+                <button id="btnGenerateSeed" data-tooltip="Generate a new seed">
+                    <img src="assets/img/newseed.png" alt="Scan">
+                </button>           
+                
+                <button id="btnWriteSeedNFC" data-tooltip="Save your seed to an NFC tag">
+                    <img src="assets/img/saveseednfc.png" alt="Scan">
+                </button>            
+            
             </div>
             <details id='showPrivateQR' class='hidden'>            
                 <summary>Show QR ⚠️ private</summary>
@@ -136,6 +139,11 @@
         </section>
     </div>
 
+    <!-- Provide a manual install button -->
+    <div style="text-align:center;margin-top:20px;">
+      <button id="btnInstallPWA" class="basic-button">Install App</button>
+    </div>
+    
     <!-- QR modal -->
     <div id="qr_scanner" class="modal">   
         <span id="preview-close">&times;</span>
@@ -257,6 +265,34 @@
           }
         })
       }
+              
+              
+      let deferredPrompt
+      window.addEventListener('beforeinstallprompt', event => {
+        event.preventDefault()
+        deferredPrompt = event
+      })
+
+      document.getElementById('btnInstallPWA').addEventListener('click', () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt()
+          deferredPrompt.userChoice.then(choiceResult => {
+            deferredPrompt = null
+          })
+        } else {
+          console.log('Install prompt not available yet')
+        }
+      })
+      
+      
+        const installButton = document.getElementById('btnInstallPWA')
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+        installButton.style.display = 'none'
+        }
+
+        window.addEventListener('appinstalled', () => {
+        installButton.style.display = 'none'
+        })      
     </script>
 
     
