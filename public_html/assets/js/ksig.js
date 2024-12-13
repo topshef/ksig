@@ -245,8 +245,8 @@
             publicKeyQrCodeElement.innerHTML = '' // Clear existing QR code
             new QRCode(publicKeyQrCodeElement, {
                 text: this.publicKeyHex,
-                width: 128,
-                height: 128,
+                width: 200,
+                height: 200,
                 colorDark: "#000000",
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
@@ -300,7 +300,11 @@
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             })
-            alert(`Yey! A new seed was generated\n\nNow save the QR or write to NFC tag`)
+
+            // alert(`Yey! A new seed was generated\n\nNow save the QR or write to NFC tag`)
+            
+            document.getElementById('showPrivateQR').classList.remove('hidden')
+
         },
 
         async writeSeedToNFC() {

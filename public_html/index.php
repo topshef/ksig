@@ -41,7 +41,7 @@
                    Write Seed to NFC Tag
                </button>
             </div>
-            <details>            
+            <details id='showPrivateQR' class='hidden'>            
                 <summary>Show QR ⚠️ private</summary>
                 <div id="seedQrCode" class="row">
                     <!-- QR code will be generated here -->
