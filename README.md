@@ -11,7 +11,7 @@ KSIG works entirely offline, including:
 KSIG integrates with other ecosystem tools to provide a modular solution that’s ready to grow.  
 Finally, DLT with decentralised key management that’s accessible to all.
 
-Hackathon pitch [ksig.uk/hh24](https://ksig.uk/hh24)
+Hackathon pitch pdf [ksig.uk/hh24](https://ksig.uk/hh24) and video [ksig.uk/video](https://ksig.uk/video) 
 
 KSIG PWA [ksig.uk](https://ksig.uk)
 
