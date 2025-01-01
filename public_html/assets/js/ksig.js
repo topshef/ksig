@@ -64,10 +64,21 @@
             })
 
 
-
-
             // Button to QR scan seed(s)
             document.getElementById('btnScanSeedQR')?.addEventListener('click', (event) => this.startQrScanning('btnScanSeedQR'))
+
+            // manual entry            
+            document.getElementById("btnEnterSeedManual")?.addEventListener("click", async (event) => {
+                let content = prompt("Enter seed info")
+                if (!content) return
+                let isHashSeed = document.getElementById('isHashSeed').checked
+                
+                // todo review/refactor.. repetitive..
+                await this.updateSeedList(content, isHashSeed)
+                const seed = await this.calcAccumulatedSeed(isHashSeed)
+                this.generateKeypair(seed)
+            })
+            
 
             // Clear seed data
             document.getElementById("btnClearSeed").addEventListener("click", () => this.clearSeedData())
