@@ -163,6 +163,10 @@
 
                 // generate checksum based on base64 data
                 const checksum = (await sha256(content)).substring(0, 4).toUpperCase()
+                // checksum based on hex
+                // rejected for now as the QR text is base64, so to keep compatibility simple
+                // but other processes use hex primarily (eg hashpool, kpool) so todo review
+                // const checksum = (await sha256(this.bodyBytesHex)).substring(0, 4).toUpperCase()
 
                  // Update UI elements
                 this.updateTransactionUI(this.bodyBytesHex, checksum)
