@@ -62,7 +62,7 @@
         </section>
         
         <section id='section_scan_tx'>
-          <h2>Scan transaction</h2>
+          <h2>Scan content</h2>
           <span class='feature'>
             <div class="row-buttons">            
                 <button id="btnScanTx" data-tooltip="Scan a transaction before signing it">
@@ -127,7 +127,7 @@
           </span>
         </section>
         <section id='section_sign_tx'>
-          <h2>Sign transaction</h2>
+          <h2>Sign content</h2>
           <span class='feature'>
 
             <button id="btnSignTx" data-tooltip="Sign the above transaction">

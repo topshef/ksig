@@ -1,6 +1,10 @@
+RewriteEngine On
+RewriteRule ^pwa(/.*)?$ / [R=301,L]
+
 Redirect 302 /demo https://youtube.com/playlist?list=PL7NX92cXziAk4MTQkFOrhX4lFen5k7d6v&si=eid8586JvTIYsl0-
 Redirect 302 /hh24 https://ksig.uk/ksig_hh24.pdf
 Redirect 302 /pitch https://youtu.be/lC2Muc5S3V4
 Redirect 302 /video https://www.youtube.com/watch?v=lC2Muc5S3V4
+
 
 

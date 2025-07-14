@@ -9,6 +9,11 @@
         scanner: null,
         seedArray: [],
 
+        // also support signing JWT eg for KPOP
+        isJWT: false,
+        jwtHeader: '',
+        jwtPayload: '',
+
         // ┌─┐┌─┐┌┐┌┌─┐┬┌─┐
         // │  │ ││││├┤ ││ ┬
         // └─┘└─┘┘└┘└  ┴└─┘
@@ -154,24 +159,44 @@
                 
                 return
             }
+
+
             
             if (sourceTrigger === 'btnScanTx') {
-                // Handle transaction data
-                this.bodyBytesBase64 = content // todo verify this
+              const isUnsignedJWT = /^[A-Za-z0-9\-_]+\.[A-Za-z0-9\-_]+$/.test(content)
+
+              if (isUnsignedJWT) {
+                this.isJWT = true
+                const [header, payload] = content.split('.')
+
+                // Only sign header.payload, not the existing signature
+                const signingInput = `${header}.${payload}`
+                this.jwtHeader = header
+                this.jwtPayload = payload
+                this.bodyBytes = new TextEncoder().encode(signingInput)
+
+                const checksum = (await sha256(signingInput)).substring(0, 4).toUpperCase()
+                this.updateTransactionUI(signingInput, checksum)
+              } else {
+                this.isJWT = false
+                const isValidBase64 = /^[A-Za-z0-9+/]+={0,2}$/.test(content) && content.length % 4 === 0
+                if (!isValidBase64) {
+                  alert('❌ Invalid base64 format. Please scan a valid transaction, or unsigned JWT.')
+                  return
+                }
+                this.bodyBytesBase64 = content
+
                 this.bodyBytesHex = this.base64ToHex(this.bodyBytesBase64)
                 this.bodyBytes = this.hexToUint8Array(this.bodyBytesHex)
 
-                // generate checksum based on base64 data
                 const checksum = (await sha256(content)).substring(0, 4).toUpperCase()
-                // checksum based on hex
-                // rejected for now as the QR text is base64, so to keep compatibility simple
-                // but other processes use hex primarily (eg hashpool, kpool) so todo review
-                // const checksum = (await sha256(this.bodyBytesHex)).substring(0, 4).toUpperCase()
-
-                 // Update UI elements
                 this.updateTransactionUI(this.bodyBytesHex, checksum)
-                return
-            } 
+              }
+              return
+            }
+            
+            
+            
             alert('Unknown scan source ref JD98432') // random refs handy if user screenshots
         },
 
@@ -270,7 +295,37 @@
 
 
         // SIGN TX
-        signTransaction() {    
+        
+        signTransaction() {
+          const bodyBytes = this.bodyBytes
+          const keyPair = this.keyPair
+
+          if (!bodyBytes) return alert('No content to sign. Please scan a transaction or JWT')
+          if (!keyPair) return alert('No key available. Please scan a key')
+              
+
+          const signature = nacl.sign.detached(bodyBytes, keyPair.secretKey)
+
+          if (this.isJWT) {
+            const sigB64url = btoa(String.fromCharCode(...signature))
+              .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+
+            const jwt = `${this.jwtHeader}.${this.jwtPayload}.${sigB64url}`
+            // QRtext = jwt
+            QRtext = sigB64url
+            // document.getElementById("QRtext").textContent = jwt
+            document.getElementById("QRtext").textContent = sigB64url
+          } else {
+            const signatureHex = this.byteArrayToHexString(signature)
+            QRtext = `${this.publicKeyHex} ${signatureHex}`
+            document.getElementById("QRtext").textContent = QRtext
+          }
+
+          this.updateQR()
+        },
+
+        
+        zzsignTransaction() {    
             const bodyBytes = this.bodyBytes
             const keyPair = this.keyPair
             
@@ -433,9 +488,11 @@
         updateTransactionUI(bodyBytesHex, checksum) {
             document.getElementById('bodyBytesHex').textContent = bodyBytesHex
 
+            const label = (this.isJWT) ? 'JWT checksum' : 'Checksum'
             
             document.getElementById('bodyBytesChecksum').innerHTML = 
-                `Checksum: ${checksum} ⚠️ ensure this matches`
+                `${label}: ${checksum} ⚠️ ensure this matches`
+                
             document.getElementById('bodyBytesHex').style.display = 'block'
         },
         
