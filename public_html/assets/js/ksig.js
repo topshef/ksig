@@ -295,7 +295,6 @@
 
 
         // SIGN TX
-        
         signTransaction() {
           const bodyBytes = this.bodyBytes
           const keyPair = this.keyPair
@@ -310,41 +309,16 @@
             const sigB64url = btoa(String.fromCharCode(...signature))
               .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 
-            const jwt = `${this.jwtHeader}.${this.jwtPayload}.${sigB64url}`
-            // QRtext = jwt
-            QRtext = sigB64url
-            // document.getElementById("QRtext").textContent = jwt
-            document.getElementById("QRtext").textContent = sigB64url
+            // const jwt = `${this.jwtHeader}.${this.jwtPayload}.${sigB64url}`
+            QRtext = `${this.publicKeyHex} ${sigB64url}`
           } else {
             const signatureHex = this.byteArrayToHexString(signature)
             QRtext = `${this.publicKeyHex} ${signatureHex}`
-            document.getElementById("QRtext").textContent = QRtext
           }
+          document.getElementById("QRtext").textContent = QRtext
 
           this.updateQR()
         },
-
-        
-        zzsignTransaction() {    
-            const bodyBytes = this.bodyBytes
-            const keyPair = this.keyPair
-            
-            console.log(keyPair) 
-            if (!bodyBytes) alert('missing bodyBytes')
-                
-            // Sign the bodyBytes
-            const signature = nacl.sign.detached(bodyBytes, keyPair.secretKey)
-
-            // Convert the signature to hex string
-            const signatureHex = this.byteArrayToHexString(signature)
-
-            // Display the QR
-            QRtext = `${this.publicKeyHex} ${signatureHex}` 
-
-            document.getElementById("QRtext").textContent = QRtext
-            this.updateQR()
-        },
-
 
         async generateSeed() {
             const randomBytes = nacl.randomBytes(32)
