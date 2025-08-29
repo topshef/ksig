@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ksig-cache-v1.716' // Increment version for updates
+const CACHE_NAME = 'ksig-cache-v1.733' // Increment version for updates
 const urlsToCache = [
   '/',
   '/index.php', // Adjust for your actual page path
@@ -8,6 +8,7 @@ const urlsToCache = [
   'assets/img/iconScanQR.png',
   'assets/img/iconScanSeedNFC.svg',
   'assets/img/iconEnterSeedManual.png',
+  'assets/img/iconSignTx_cheque.png',
   'assets/img/key.jpg',
   'assets/js/jquery-3.6.0.min.js',
   'assets/js/instascan.min.js',

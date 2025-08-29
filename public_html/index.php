@@ -91,20 +91,26 @@
 
             <p>Public key ends in...</p>
             <mark><h1 id="publicKeyEnding"></h1></mark>
-            <p id='publicKey'></p>
 
             <details>
-                <summary>Show QR of public key</summary>
+                <summary>More</summary>
+                <!-- <img src='assets/img/key.jpg' width="150px">-->
+                Public key is<BR>
+                <p id='publicKey'></p>
+
                 <div id="publicKeyQrCode" class="row">
                     <!-- QR code will be generated here -->
                 </div>
+                <BR>
+                <details>            
+                    <summary>⚠ View private key</summary>
+                    <textarea  type="text" id="seed" placeholder="Paste your private key here or scan seed(s)" rows="2" cols="100"></textarea>
+                </details>                
+                
             </details>
 
-            <img src='assets/img/key.jpg' width="150px">
-            <details>            
-                <summary>⚠ View private key</summary>
-                <textarea  type="text" id="seed" placeholder="Paste your private key here or scan seed(s)" rows="2" cols="100"></textarea>
-            </details>
+            
+
           </span>
         </section>
         
@@ -129,9 +135,9 @@
 
             <p id="confirmMessage"></p>
             <button id="btnSignTx" data-tooltip="Sign the above transaction">
-            <img src="assets/img/iconSignTx.png" alt="Sign"></button>
+            <img src="assets/img/iconSignTx_cheque.png" alt="Sign"></button>
 
-            <span id="qrcode">QR code</span>
+            <span id="qrcode">QR code shows here once you sign</span>
             
             <details>
               <summary>Show signed data</summary>

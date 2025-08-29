@@ -286,10 +286,31 @@ button:hover img {
     right: 0;
 }
 
+/* Center everything inside <details> blocks */
+details { 
+  width: 100%;
+  text-align: center;          /* centers inline content like text/images */
+}
+
+/* center block children (img, div, etc.) */
+details > * { 
+  margin-left: auto; 
+  margin-right: auto; 
+}
+
+/* your QR code row is a flex row but not centered horizontally */
+details .row {
+  justify-content: center;     /* was missing */
+  width: 100%;
+}
+
+/* already asked for wrapping + centered */
+#publicKey,
 #QRtext {
-    white-space: normal;       /* allow wrapping */
-    word-break: break-all;     /* break long unspaced strings */
-    overflow-wrap: anywhere;   /* modern fallback */
-    text-align: left;          /* optional: keep aligned instead of center */
-    padding: 5px;              /* small padding for readability */
+  white-space: normal
+  word-break: break-all
+  overflow-wrap: anywhere
+  font-family: monospace
+  text-align: center
+  padding: 5px
 }
