@@ -32,8 +32,8 @@
         
 
         <div class="tabs" style="text-align: center; margin-bottom: 20px;">
-            <a href="?showFeatures=section_create_seed,section_scan_seed,section_view_key" class="tab selected">Key Management</a>
-            <a href="?showFeatures=section_scan_tx,section_scan_seed,section_sign_tx,section_view_key" class="tab">Signing</a>
+            <a href="?showFeatures=section_create_seed,section_scan_seed" class="tab selected">Key Management</a>
+            <a href="?showFeatures=section_scan_tx,section_scan_seed,section_sign_tx" class="tab">Signing</a>
         </div>
 
         
@@ -87,11 +87,8 @@
             </div>       
      
             <p id='seedList'></p>
-          </span>
-        </section>
-        <section id='section_view_key'>
-          <h2>View key</h2>
-           <span class='feature'>
+
+
             <p>Public key ends in...</p>
             <mark><h1 id="publicKeyEnding"></h1></mark>
             <p id='publicKey'></p>
