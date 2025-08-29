@@ -279,6 +279,8 @@
             // Update UI with the public key and its ending
             document.getElementById("publicKeyEnding").textContent = last3chars
             document.getElementById("publicKey").textContent = this.publicKeyHex.slice(-64)
+            this.updateConfirmMessage()
+
             
             // Generate QR code for the public key
             const publicKeyQrCodeElement = document.getElementById('publicKeyQrCode')
@@ -294,7 +296,24 @@
         },
 
 
+
         // SIGN TX
+        updateConfirmMessage() {
+          document.getElementById("QRtext").textContent = ''
+          document.getElementById("qrcode").innerHTML = ''
+
+          const checksum = this.checksum
+          const keyEnding = document.getElementById('publicKeyEnding').textContent
+          const confirmElem = document.getElementById('confirmMessage')
+
+          if (checksum && keyEnding) {
+            confirmElem.innerHTML = `Sign content <mark>${checksum}</mark> with key ending <mark>${keyEnding}</mark>?`
+          } else {
+            confirmElem.innerHTML = '' // clear if incomplete
+          }
+        },
+        
+
         signTransaction() {
           const bodyBytes = this.bodyBytes
           const keyPair = this.keyPair
@@ -312,6 +331,7 @@
             // const jwt = `${this.jwtHeader}.${this.jwtPayload}.${sigB64url}`
             QRtext = `${this.publicKeyHex} ${sigB64url}`
           } else {
+            
             const signatureHex = this.byteArrayToHexString(signature)
             QRtext = `${this.publicKeyHex} ${signatureHex}`
           }
@@ -453,6 +473,12 @@
             this.setHTML('publicKeyEnding')
             this.setHTML('publicKey')
             this.setHTML('seed')
+            
+            // wipe confirmation + signature outputs
+            this.setHTML('confirmMessage')
+            this.setHTML('QRtext')
+            this.setHTML('qrcode')
+  
         },
 
         setHTML(id, value = '') {
@@ -460,6 +486,8 @@
         },
 
         updateTransactionUI(bodyBytesHex, checksum) {
+            this.checksum = checksum
+            
             document.getElementById('bodyBytesHex').textContent = bodyBytesHex
 
             const label = (this.isJWT) ? 'JWT checksum' : 'Checksum'
@@ -467,7 +495,12 @@
             document.getElementById('bodyBytesChecksum').innerHTML = 
                 `${label}: ${checksum} ⚠️ ensure this matches`
                 
+                
+                
             document.getElementById('bodyBytesHex').style.display = 'block'
+            
+            this.updateConfirmMessage()
+
         },
         
         updateQR() {

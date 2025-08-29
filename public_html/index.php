@@ -129,7 +129,7 @@
         <section id='section_sign_tx'>
           <h2>Sign content</h2>
           <span class='feature'>
-
+            <p id="confirmMessage"></p>
             <button id="btnSignTx" data-tooltip="Sign the above transaction">
             <img src="assets/img/iconSignTx.png" alt="Sign"></button>
 
@@ -140,6 +140,7 @@
     </div>
 
     <!-- Provide a manual install button -->
+    <HR>
     <div style="text-align:center;margin-top:20px;">
       <button id="btnInstallPWA" class="basic-button">Install App</button>
     </div>

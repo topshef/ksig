@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ksig-cache-v1.713' // Increment version for updates
+const CACHE_NAME = 'ksig-cache-v1.715' // Increment version for updates
 const urlsToCache = [
   '/',
   '/index.php', // Adjust for your actual page path
