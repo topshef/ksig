@@ -307,7 +307,7 @@
           const confirmElem = document.getElementById('confirmMessage')
 
           if (checksum && keyEnding) {
-            confirmElem.innerHTML = `Sign content <mark>${checksum}</mark> with key ending <mark>${keyEnding}</mark>?`
+            confirmElem.innerHTML = `Sign content <b><mark>${checksum}</mark></b> with key ending <b><mark>${keyEnding}</mark></b>?`
           } else {
             confirmElem.innerHTML = '' // clear if incomplete
           }

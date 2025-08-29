@@ -285,3 +285,11 @@ button:hover img {
     bottom: 0;
     right: 0;
 }
+
+#QRtext {
+    white-space: normal;       /* allow wrapping */
+    word-break: break-all;     /* break long unspaced strings */
+    overflow-wrap: anywhere;   /* modern fallback */
+    text-align: left;          /* optional: keep aligned instead of center */
+    padding: 5px;              /* small padding for readability */
+}

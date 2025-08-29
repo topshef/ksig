@@ -33,7 +33,7 @@
 
         <div class="tabs" style="text-align: center; margin-bottom: 20px;">
             <a href="?showFeatures=section_create_seed,section_scan_seed" class="tab selected">Key Management</a>
-            <a href="?showFeatures=section_scan_tx,section_scan_seed,section_sign_tx" class="tab">Signing</a>
+            <a href="?showFeatures=section_scan_tx,section_scan_seed,section_scansign_tx" class="tab">Signing</a>
         </div>
 
         
@@ -63,7 +63,7 @@
         
 
         <section id='section_scan_seed'>
-          <h2>Scan seeds</h2>
+          <h2>Assemble key</h2>
           <span class='feature'>
            <div id="seedInputButtons" class="row-buttons">
                 <button id="btnScanSeedNFC" data-tooltip="Scan seed from NFC tag">
@@ -108,33 +108,36 @@
           </span>
         </section>
         
-        <section id='section_scan_tx'>
-          <h2>Scan content</h2>
+        <section id='section_scansign_tx'>
+          <h2>Scan & Sign</h2>
           <span class='feature'>
             <div class="row-buttons">            
                 <button id="btnScanTx" data-tooltip="Scan a transaction before signing it">
                     <img src="assets/img/iconScanQR.png" alt="Scan">
                 </button>
             </div>
-            
-            <textarea  type="text" id="bodyBytesHex" placeholder="transaction body bytes in hex" rows="7">
-            </textarea>
+            <details>
+              <summary>Show content</summary>
+                          
+                <textarea  type="text" id="bodyBytesHex" placeholder="transaction body bytes in hex" rows="7">
+                </textarea>
 
-            <mark>
-                <p id='bodyBytesChecksum'></p>
-            </mark>
-          </span>
-        </section>
-        
-        <section id='section_sign_tx'>
-          <h2>Sign content</h2>
-          <span class='feature'>
+                <mark>
+                    <p id='bodyBytesChecksum'></p>
+                </mark>
+            </details>
+
             <p id="confirmMessage"></p>
             <button id="btnSignTx" data-tooltip="Sign the above transaction">
             <img src="assets/img/iconSignTx.png" alt="Sign"></button>
 
             <span id="qrcode">QR code</span>
-            <p id="QRtext">QR text</p>       
+            
+            <details>
+              <summary>Show signed data</summary>
+                <p id="QRtext">QR text</p>       
+            </details>
+            
           </span>
         </section>
     </div>
