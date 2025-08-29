@@ -61,23 +61,7 @@
           </span>
         </section>
         
-        <section id='section_scan_tx'>
-          <h2>Scan content</h2>
-          <span class='feature'>
-            <div class="row-buttons">            
-                <button id="btnScanTx" data-tooltip="Scan a transaction before signing it">
-                    <img src="assets/img/iconScanQR.png" alt="Scan">
-                </button>
-            </div>
-            
-            <textarea  type="text" id="bodyBytesHex" placeholder="transaction body bytes in hex" rows="7">
-            </textarea>
 
-            <mark>
-                <p id='bodyBytesChecksum'></p>
-            </mark>
-          </span>
-        </section>
         <section id='section_scan_seed'>
           <h2>Scan seeds</h2>
           <span class='feature'>
@@ -126,6 +110,25 @@
             </details>
           </span>
         </section>
+        
+        <section id='section_scan_tx'>
+          <h2>Scan content</h2>
+          <span class='feature'>
+            <div class="row-buttons">            
+                <button id="btnScanTx" data-tooltip="Scan a transaction before signing it">
+                    <img src="assets/img/iconScanQR.png" alt="Scan">
+                </button>
+            </div>
+            
+            <textarea  type="text" id="bodyBytesHex" placeholder="transaction body bytes in hex" rows="7">
+            </textarea>
+
+            <mark>
+                <p id='bodyBytesChecksum'></p>
+            </mark>
+          </span>
+        </section>
+        
         <section id='section_sign_tx'>
           <h2>Sign content</h2>
           <span class='feature'>
